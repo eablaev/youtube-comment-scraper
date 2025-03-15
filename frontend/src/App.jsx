@@ -2,43 +2,39 @@ import { useState } from "react";
 import axios from "axios";
 
 function App() {
-  const [prompt, setPrompt] = useState("");
+  const [channelId, setChannelId] = useState("");
+  const [userInput, setUserInput] = useState("");
   const [analysis, setAnalysis] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const fetchAnalysis = async () => {
-    setLoading(true);
     try {
       const response = await axios.post("http://127.0.0.1:5000/analyze", {
-        userInput: prompt,
+        channelId,
+        userInput,
       });
-
       setAnalysis(response.data.analysis);
     } catch (error) {
       console.error("Error fetching analysis:", error);
-      setAnalysis("Failed to get analysis.");
     }
-    setLoading(false);
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div>
       <h1>YouTube Comment Analyzer</h1>
-      
-      <textarea
-        rows="3"
-        cols="50"
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        placeholder="Enter your analysis prompt"
+      <input
+        type="text"
+        placeholder="Enter YouTube Channel ID"
+        value={channelId}
+        onChange={(e) => setChannelId(e.target.value)}
       />
-      <br />
-      
-      <button onClick={fetchAnalysis} disabled={loading}>
-        {loading ? "Analyzing..." : "Analyze Comments"}
-      </button>
-
-      <h2>Analysis:</h2>
+      <input
+        type="text"
+        placeholder="Enter analysis prompt"
+        value={userInput}
+        onChange={(e) => setUserInput(e.target.value)}
+      />
+      <button onClick={fetchAnalysis}>Analyze Comments</button>
+      <h2>Analysis Result:</h2>
       <p>{analysis}</p>
     </div>
   );
